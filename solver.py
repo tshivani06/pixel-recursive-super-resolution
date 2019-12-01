@@ -59,12 +59,15 @@ class Solver(object):
     threads = tf.train.start_queue_runners(sess=sess, coord=coord)
     iters = 0
     try:
+      w_file = open("log.txt","w")
+      w_file.write("Step\tLoss")
       while not coord.should_stop():
         # Run training steps or whatever
         t1 = time.time()
         _, loss = sess.run([self.train_op, self.net.loss], feed_dict={self.net.train: True})
         t2 = time.time()
         print('step %d, loss = %.2f (%.1f examples/sec; %.3f sec/batch)' % ((iters, loss, self.batch_size/(t2-t1), (t2-t1))))
+        w_file.write(str(iters)+"\t"+str(loss)+"\n")
         iters += 1
         if iters % 10 == 0:
           summary_str = sess.run(summary_op, feed_dict={self.net.train: True})
@@ -83,6 +86,7 @@ class Solver(object):
     finally:
       # When done, ask the threads to stop.
       coord.request_stop()
+      w_file.close()
 
     # Wait for threads to finish.
     coord.join(threads)
