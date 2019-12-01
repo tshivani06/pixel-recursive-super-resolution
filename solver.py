@@ -59,7 +59,7 @@ class Solver(object):
     threads = tf.train.start_queue_runners(sess=sess, coord=coord)
     iters = 0
     try:
-      w_file = open("log.txt","w")
+      w_file = open("log.txt","a")
       w_file.write("Step\tLoss")
       while not coord.should_stop():
         # Run training steps or whatever
